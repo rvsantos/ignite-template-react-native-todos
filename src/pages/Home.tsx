@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { StyleSheet, View } from 'react-native';
+import { Alert, StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
 import { Task, TasksList } from '../components/TasksList';
@@ -12,6 +13,12 @@ export function Home() {
 
   function handleAddTask(newTaskTitle: string) {
     if (isEmpty(newTaskTitle)) return
+
+    const task = tasks.find(t => t.title === newTaskTitle)
+    if (task) {
+        Alert.alert('Task já cadastrada', 'Você não pode cadastrar uma tarefa que já existe')
+        return
+    }
 
     const data = {
         id: new Date().getTime(),

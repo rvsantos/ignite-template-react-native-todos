@@ -2,6 +2,7 @@ import React from 'react';
 import { render, fireEvent } from '@testing-library/react-native';
 
 import { Home } from '../../pages/Home';
+import { Alert } from 'react-native';
 
 describe('Home', () => {
   it('should be able to render new added tasks', () => {
@@ -22,6 +23,23 @@ describe('Home', () => {
     expect(getByText('Primeira tarefa'));
     expect(getByText('Segunda tarefa'));
     expect(getByText('2 tarefas'));
+  });
+
+  it('should not be able add task that already exists', () => {
+    const { getByPlaceholderText, getByText } = render(<Home />);
+    const inputElement = getByPlaceholderText('Adicionar novo todo...');
+    jest.spyOn(Alert, 'alert');
+
+    fireEvent.changeText(inputElement, 'Primeira tarefa');
+    fireEvent(inputElement, 'submitEditing');
+
+    expect(getByText('Primeira tarefa'));
+    expect(getByText('1 tarefa'));
+
+    fireEvent.changeText(inputElement, 'Primeira tarefa');
+    fireEvent(inputElement, 'submitEditing');
+
+    expect(Alert.alert).toHaveBeenCalledWith('Task já cadastrada', 'Você não pode cadastrar uma tarefa que já existe');
   });
 
   it('should be able to render tasks as done and undone', () => {
