@@ -1,5 +1,4 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
 import { Alert, StyleSheet, View } from 'react-native';
 
 import { Header } from '../components/Header';
@@ -40,7 +39,19 @@ export function Home() {
   }
 
   function handleRemoveTask(id: number) {
-    setTasks(oldTasks => oldTasks.filter(task => task.id !== id))
+      Alert.alert('Remover tarefa', 'Você tem certeza que deseja remover esta tarefa?', [
+          {
+                text: 'Cancelar',
+                style: 'cancel'
+          },
+          {
+                text: 'Remover',
+                style: 'destructive',
+                onPress: () => {
+                    setTasks(oldTasks => oldTasks.filter(task => task.id !== id))
+                }
+          }
+      ])
   }
 
   return (

@@ -1,5 +1,5 @@
 import React from 'react';
-import { render, fireEvent } from '@testing-library/react-native';
+import { render, fireEvent, act } from '@testing-library/react-native';
 
 import { Home } from '../../pages/Home';
 import { Alert } from 'react-native';
@@ -13,7 +13,7 @@ describe('Home', () => {
 
     fireEvent.changeText(inputElement, 'Primeira tarefa');
     fireEvent(inputElement, 'submitEditing');
-    
+
     expect(getByText('Primeira tarefa'));
     expect(getByText('1 tarefa'));
 
@@ -51,7 +51,7 @@ describe('Home', () => {
 
     const buttonElement = getByTestId('button-0');
     const markerElement = getByTestId('marker-0');
-    
+
     const taskElement = getByText('Primeira tarefa');
 
     expect(buttonElement).toHaveStyle({
@@ -89,16 +89,21 @@ describe('Home', () => {
   it('should be able to remove tasks after the trash icon was pressed', async () => {
     const { getByPlaceholderText, getByText, getByTestId, queryByText } = render(<Home />);
     const inputElement = getByPlaceholderText('Adicionar novo todo...');
+    const spyAlert = jest.spyOn(Alert, 'alert').mockImplementation(() => {});
 
     fireEvent.changeText(inputElement, 'Primeira tarefa');
     fireEvent(inputElement, 'submitEditing');
-    
+
     fireEvent.changeText(inputElement, 'Segunda tarefa');
     fireEvent(inputElement, 'submitEditing');
 
     const firstTaskTrashIcon = getByTestId('trash-0');
-
     fireEvent(firstTaskTrashIcon, 'press');
+
+    expect(Alert.alert.call.length).toBe(1);
+
+    // @ts-ignore
+    act(() => spyAlert.mock.calls[1][2][1].onPress());
 
     expect(queryByText('Primeira tarefa')).toBeNull();
     expect(getByText('Segunda tarefa'));
