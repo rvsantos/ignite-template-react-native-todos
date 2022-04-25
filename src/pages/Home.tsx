@@ -38,6 +38,21 @@ export function Home() {
     setTasks(updatedTasks)
   }
 
+  function handleEditTask(id: number, taskNewTitle: string) {
+    const updatedTasks = tasks.map(task => ({...task}))
+
+    const task = updatedTasks.find(task => task.id === id)
+
+    if (!task) {
+        Alert.alert('Tarefa não encontrada', 'Não foi possível encontrar a tarefa para editar')
+        return
+    }
+
+    task.title = taskNewTitle
+
+    setTasks(updatedTasks)
+  }
+
   function handleRemoveTask(id: number) {
       Alert.alert('Remover tarefa', 'Você tem certeza que deseja remover esta tarefa?', [
           {
@@ -64,6 +79,7 @@ export function Home() {
         tasks={tasks}
         toggleTaskDone={handleToggleTaskDone}
         removeTask={handleRemoveTask}
+        editTask={handleEditTask}
       />
     </View>
   )
